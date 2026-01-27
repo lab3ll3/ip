@@ -38,6 +38,12 @@ public class LicM {
                 showGoodbye();
                 scanner.close();
                 return;
+            } else if (input.equals("list")) {
+                showList();
+            } else if (!input.isEmpty()) {
+                showAdd(input);
+            } else {
+                showEcho(input);
             }
         }
     }
