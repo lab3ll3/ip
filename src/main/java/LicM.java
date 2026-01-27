@@ -6,7 +6,7 @@ public class LicM {
     private static int taskCount = 0;
 
     public static void main(String[] args) {
-        showEcho();
+        LicMChat();
     }
 
     private static void showGreeting() {
