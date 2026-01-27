@@ -27,7 +27,7 @@ public class LicM {
         printLine();
     }
 
-    public static void showEcho() {
+    public static void LicMChat() {
         showGreeting();
         Scanner scanner = new Scanner(System.in);
 
