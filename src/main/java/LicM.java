@@ -32,11 +32,7 @@ public class LicM {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            String input = scanner.nextLine();
-
-            System.out.println("____________________________________________________________");
-            System.out.println(input);
-            System.out.println("____________________________________________________________");
+            String input = scanner.nextLine().trim();
 
             if (input.equals("bye")) {
                 showGoodbye();
