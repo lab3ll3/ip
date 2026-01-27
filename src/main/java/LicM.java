@@ -1,7 +1,6 @@
 public class LicM {
     public static void main(String[] args) {
-        showGreeting();
-        showGoodbye();
+        showEcho();
     }
 
     private static void showGreeting() {
