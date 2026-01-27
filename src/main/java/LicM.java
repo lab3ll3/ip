@@ -81,6 +81,25 @@ public class LicM {
         printLine();
     }
 
+    public static void showEcho() {
+        showGreeting();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            String input = scanner.nextLine();
+
+            System.out.println("____________________________________________________________");
+            System.out.println(input);
+            System.out.println("____________________________________________________________");
+
+            if (input.equals("bye")) {
+                showGoodbye();
+                scanner.close();
+                return;
+            }
+        }
+    }
+
     private static void showGoodbye() {
         System.out.println("    Bye. Hope to see you again soon!");
         printLine();
