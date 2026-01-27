@@ -21,10 +21,10 @@ public class LicM {
 
         System.out.println("Hello from\n" + logo);
 
-        System.out.println("____________________________________________________________");
-        System.out.println(" Hello! I'm LicM");
-        System.out.println(" What can I do for you?");
-        System.out.println("____________________________________________________________");
+        printLine();
+        System.out.println("    Hello! I'm LicM");
+        System.out.println("    What can I do for you?");
+        printLine();
     }
 
     public static void showEcho() {
