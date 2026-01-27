@@ -42,6 +42,39 @@ public class LicM {
         }
     }
 
+    private static void showEcho(String input) {
+        printLine();
+        System.out.print(input);
+        printLine();
+    }
+
+    private static void showAdd(String input) {
+        if (taskCount < MAX_TASKS) {
+            tasks[taskCount] = input;
+            taskCount++;
+
+            printLine();
+            System.out.println("    added: " + input);
+            printLine();
+        } else {
+            printLine();
+            System.out.println("    I can't add any more tasks!");
+            printLine();
+        }
+    }
+
+    private static void showList() {
+        printLine();
+        if (taskCount == 0) {
+            System.out.println("    Your task list is empty.");
+        } else {
+            for (int i = 0; i < taskCount; i++) {
+                System.out.println("    " + (i + 1) + ". " + tasks[i]);
+            }
+        }
+        printLine();
+    }
+
     private static void showGoodbye() {
         System.out.println(" Bye. Hope to see you again soon!");
         System.out.println("____________________________________________________________");
