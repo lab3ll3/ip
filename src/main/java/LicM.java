@@ -1,6 +1,10 @@
 import java.util.Scanner;
 
 public class LicM {
+    private static final int MAX_TASKS = 100;
+    private static final String[] tasks = new String[MAX_TASKS];
+    private static int taskCount = 0;
+
     public static void main(String[] args) {
         showEcho();
     }
