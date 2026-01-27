@@ -76,8 +76,8 @@ public class LicM {
     }
 
     private static void showGoodbye() {
-        System.out.println(" Bye. Hope to see you again soon!");
-        System.out.println("____________________________________________________________");
+        System.out.println("    Bye. Hope to see you again soon!");
+        printLine();
     }
 
     private static void printLine() {
