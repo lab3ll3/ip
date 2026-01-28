@@ -85,7 +85,7 @@ public class LicM {
             taskCount++;
 
             printLine();
-            System.out.println("    added: " + input);
+            System.out.println("    added: " + description);
             printLine();
         } else {
             printLine();
