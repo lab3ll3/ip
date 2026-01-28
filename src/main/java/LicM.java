@@ -80,7 +80,8 @@ public class LicM {
 
     private static void showAdd(String description) {
         if (taskCount < MAX_TASKS) {
-            tasks[taskCount] = input;
+            Task newTask = new Task(description);
+            TASKS[taskCount] = newTask;
             taskCount++;
 
             printLine();
