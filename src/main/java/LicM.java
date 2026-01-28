@@ -78,13 +78,7 @@ public class LicM {
         }
     }
 
-    private static void showEcho(String input) {
-        printLine();
-        System.out.print(input);
-        printLine();
-    }
-
-    private static void showAdd(String input) {
+    private static void showAdd(String description) {
         if (taskCount < MAX_TASKS) {
             tasks[taskCount] = input;
             taskCount++;
