@@ -55,7 +55,7 @@ public class LicM {
         printLine();
     }
 
-    public static void LicMChat() {
+    public static void runChat() {
         showGreeting();
         Scanner scanner = new Scanner(System.in);
 
