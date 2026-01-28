@@ -106,9 +106,8 @@ public class LicM {
         printLine();
     }
 
-    public static void showEcho() {
-        showGreeting();
-        Scanner scanner = new Scanner(System.in);
+    private static void handleMark(String input, boolean markAsDone) {
+        printLine();
 
         while (true) {
             String input = scanner.nextLine();
