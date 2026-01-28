@@ -68,6 +68,10 @@ public class LicM {
                 return;
             } else if (input.equals("list")) {
                 showList();
+            } else if (input.startsWith("mark ")) {
+                handleMark(input, true);
+            } else if (input.startsWith("unmark ")) {
+                handleMark(input, false);
             } else if (!input.isEmpty()) {
                 showAdd(input);
             } else {
