@@ -113,13 +113,9 @@ public class LicM {
             String numberStr = input.substring(markAsDone ? 5 : 7).trim();
             int taskIndex = Integer.parseInt(numberStr) - 1;
 
-            System.out.println("____________________________________________________________");
-            System.out.println(input);
-            System.out.println("____________________________________________________________");
-
-            if (input.equals("bye")) {
-                showGoodbye();
-                scanner.close();
+            if (taskIndex < 0 || taskIndex >= taskCount) {
+                System.out.println("    Task number " + (taskIndex + 1) + " does not exist.");
+                printLine();
                 return;
             }
         }
