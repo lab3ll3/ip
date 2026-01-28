@@ -118,7 +118,24 @@ public class LicM {
                 printLine();
                 return;
             }
+
+            Task task = TASKS[taskIndex];
+
+            if (markAsDone) {
+                task.markAsDone();
+                System.out.println("    Nice! I've marked this task as done:");
+            } else {
+                task.markAsNotDone();
+                System.out.println("    OK, I've marked this task as not done yet:");
+            }
+
+            System.out.println("      " + task);
+
+        } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+            System.out.println("    Please use: " + (markAsDone ? "mark" : "unmark") + " <task-number>");
         }
+
+        printLine();
     }
 
     private static void showGoodbye() {
