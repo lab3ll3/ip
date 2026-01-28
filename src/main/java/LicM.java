@@ -60,7 +60,7 @@ public class LicM {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            String input = scanner.nextLine().trim();
+            String input = SCANNER.nextLine().trim();
 
             if (input.equals("bye")) {
                 showGoodbye();
