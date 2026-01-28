@@ -74,8 +74,6 @@ public class LicM {
                 handleMark(input, false);
             } else if (!input.isEmpty()) {
                 showAdd(input);
-            } else {
-                showEcho(input);
             }
         }
     }
