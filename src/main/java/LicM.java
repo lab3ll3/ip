@@ -109,8 +109,9 @@ public class LicM {
     private static void handleMark(String input, boolean markAsDone) {
         printLine();
 
-        while (true) {
-            String input = scanner.nextLine();
+        try {
+            String numberStr = input.substring(markAsDone ? 5 : 7).trim();
+            int taskIndex = Integer.parseInt(numberStr) - 1;
 
             System.out.println("____________________________________________________________");
             System.out.println(input);
