@@ -4,6 +4,7 @@ public class LicM {
     private static final int MAX_TASKS = 100;
     private static final Task[] TASKS = new Task[MAX_TASKS];
     private static int taskCount = 0;
+    private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
         LicMChat();
