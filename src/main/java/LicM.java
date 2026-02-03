@@ -100,7 +100,7 @@ public class LicM {
             System.out.println("    Your task list is empty.");
         } else {
             for (int i = 0; i < taskCount; i++) {
-                System.out.println("    " + (i + 1) + ". " + tasks[i]);
+                System.out.println("    " + (i + 1) + ". " + TASKS[i]);
             }
         }
         printLine();
