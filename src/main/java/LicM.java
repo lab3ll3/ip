@@ -138,6 +138,80 @@ public class LicM {
         printLine();
     }
 
+private static void handleTodo(String input) {
+    if (input.length() <= "todo ".length()) {
+        printLine();
+        System.out.println("    ☹ OOPS!!! The description of a todo cannot be empty.");
+        printLine();
+        return;
+    }
+
+    String description = input.substring(5).trim();
+    addTask(new Todo(description));
+}
+
+private static void handleDeadline(String input) {
+    try {
+        String content = input.substring(9).trim();
+        int byIndex = content.indexOf("/by ");
+
+        if (byIndex == -1) {
+            printLine();
+            System.out.println("    ☹ OOPS!!! Deadline must include '/by' time.");
+            printLine();
+            return;
+        }
+
+        String description = content.substring(0, byIndex).trim();
+        String by = content.substring(byIndex + 4).trim();
+
+        if (description.isEmpty()) {
+            printLine();
+            System.out.println("    ☹ OOPS!!! The description of a deadline cannot be empty.");
+            printLine();
+            return;
+        }
+
+        addTask(new Deadline(description, by));
+    } catch (StringIndexOutOfBoundsException e) {
+        printLine();
+        System.out.println("    ☹ OOPS!!! Invalid deadline format. Use: deadline <task> /by <time>");
+        printLine();
+    }
+}
+
+private static void handleEvent(String input) {
+    try {
+        String content = input.substring(6).trim();
+        int fromIndex = content.indexOf("/from ");
+        int toIndex = content.indexOf("/to ");
+
+        if (fromIndex == -1 || toIndex == -1) {
+            printLine();
+            System.out.println("    ☹ OOPS!!! Event must include '/from' and '/to' times.");
+            printLine();
+            return;
+        }
+
+        String description = content.substring(0, fromIndex).trim();
+        String from = content.substring(fromIndex + 6, toIndex).trim();
+        String to = content.substring(toIndex + 4).trim();
+
+        if (description.isEmpty()) {
+            printLine();
+            System.out.println("    ☹ OOPS!!! The description of an event cannot be empty.");
+            printLine();
+            return;
+        }
+
+        addTask(new Event(description, from, to));
+    } catch (StringIndexOutOfBoundsException e) {
+        printLine();
+        System.out.println("    ☹ OOPS!!! Invalid event format. Use: event <task> /from <time> /to <time>");
+        printLine();
+    }
+}
+
     private static void showGoodbye() {
         System.out.println("    Bye. Hope to see you again soon!");
         printLine();
