@@ -113,8 +113,16 @@ private static class Event extends Task {
                 handleMark(input, true);
             } else if (input.startsWith("unmark ")) {
                 handleMark(input, false);
-            } else if (!input.isEmpty()) {
-                showAdd(input);
+            } else if (input.startsWith("todo")) {
+                handleTodo(input);
+            } else if (input.startsWith("deadline")) {
+                handleDeadline(input);
+            } else if (input.startsWith("event")) {
+                handleEvent(input);
+            } else {
+                printLine();
+                System.out.println("    ☹ OOPS!!! I'm sorry, I don't know what that means :-(");
+                printLine();
             }
         }
     }
