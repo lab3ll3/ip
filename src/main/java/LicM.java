@@ -127,7 +127,7 @@ private static class Event extends Task {
         }
     }
 
-    private static void showAdd(String description) {
+    private static void addTask(Task task) {
         if (taskCount < MAX_TASKS) {
             Task newTask = new Task(description);
             TASKS[taskCount] = newTask;
