@@ -98,14 +98,12 @@ private static class Event extends Task {
 
     public static void runChat() {
         showGreeting();
-        Scanner scanner = new Scanner(System.in);
 
         while (true) {
             String input = SCANNER.nextLine().trim();
 
             if (input.equals("bye")) {
                 showGoodbye();
-                scanner.close();
                 return;
             } else if (input.equals("list")) {
                 showList();
@@ -129,12 +127,13 @@ private static class Event extends Task {
 
     private static void addTask(Task task) {
         if (taskCount < MAX_TASKS) {
-            Task newTask = new Task(description);
-            TASKS[taskCount] = newTask;
+            TASKS[taskCount] = task;
             taskCount++;
 
             printLine();
-            System.out.println("    added: " + description);
+            System.out.println("    Got it. I've added this task:");
+            System.out.println("      " + task);
+            System.out.println("    Now you have " + taskCount + " tasks in the list.");
             printLine();
         } else {
             printLine();
