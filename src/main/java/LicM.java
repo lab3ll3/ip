@@ -5,11 +5,10 @@ import task.Task;
 import task.Todo;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class LicM {
-    private static final int MAX_TASKS = 100;
-    private static final Task[] tasks = new Task[MAX_TASKS];
-    private static int taskCount = 0;
+    private static final ArrayList<Task> tasks = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
     private static final String INDENT = "    ";
 
@@ -71,26 +70,23 @@ public class LicM {
     }
 
     private static void addTask(Task task) {
-        if (taskCount < MAX_TASKS) {
-            tasks[taskCount] = task;
-            taskCount++;
+        tasks.add(task);
 
-            printLine();
-            System.out.println(INDENT + "Got it. I've added this task:");
-            System.out.println(INDENT + "  " + task);
-            System.out.println(INDENT + "Now you have " + taskCount + " tasks in the list.");
-            printLine();
-        }
+        printLine();
+        System.out.println(INDENT + "Got it. I've added this task:");
+        System.out.println(INDENT + "  " + task);
+        System.out.println(INDENT + "Now you have " + tasks.size() + " tasks in the list.");
+        printLine();
     }
 
     private static void showList() throws LicMException {
         printLine();
-        if (taskCount == 0) {
+        if (tasks.isEmpty()) {
             throw LicMException.emptyTaskList();
         } else {
             System.out.println(INDENT + "Here are the tasks in your list:");
-            for (int i = 0; i < taskCount; i++) {
-                System.out.println(INDENT + (i + 1) + ". " + tasks[i]);
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println(INDENT + (i + 1) + ". " + tasks.get(i));
             }
         }
         printLine();
@@ -122,27 +118,21 @@ public class LicM {
         try {
             int taskIndex = Integer.parseInt(description) - 1;
 
-            if (taskIndex < 0 || taskIndex >= taskCount) {
-                throw LicMException.invalidTaskNumber(taskCount);
+            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+                throw LicMException.invalidTaskNumber(tasks.size());
             }
 
-            Task removedTask = tasks[taskIndex];
-
-            // Shift remaining tasks left
-            for (int i = taskIndex; i < taskCount - 1; i++) {
-                tasks[i] = tasks[i + 1];
-            }
-            tasks[taskCount - 1] = null;
-            taskCount--;
+            Task removedTask = tasks.get(taskIndex);
+            tasks.remove(taskIndex);
 
             printLine();
             System.out.println(INDENT + "Noted. I've removed this task:");
             System.out.println(INDENT + "  " + removedTask);
-            System.out.println(INDENT + "Now you have " + taskCount + " tasks in the list.");
+            System.out.println(INDENT + "Now you have " + tasks.size() + " tasks in the list.");
             printLine();
 
         } catch (NumberFormatException e) {
-            throw LicMException.invalidTaskNumber(taskCount);
+            throw LicMException.invalidTaskNumber(tasks.size());
         }
     }
 
@@ -228,11 +218,11 @@ public class LicM {
 
             int taskIndex = Integer.parseInt(numberStr) - 1;
 
-            if (taskIndex < 0 || taskIndex >= taskCount) {
-                throw LicMException.invalidTaskNumber(taskCount);
+            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+                throw LicMException.invalidTaskNumber(tasks.size());
             }
 
-            Task task = tasks[taskIndex];
+            Task task = tasks.get(taskIndex);
 
             printLine();
             if (markAsDone) {
@@ -246,7 +236,7 @@ public class LicM {
             printLine();
 
         } catch (NumberFormatException e) {
-            throw LicMException.invalidTaskNumber(taskCount);
+            throw LicMException.invalidTaskNumber(tasks.size());
         }
     }
 
