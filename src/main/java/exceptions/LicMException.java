@@ -1,3 +1,5 @@
+package exceptions;
+
 public class LicMException extends Exception {
 
     public LicMException(String message) {
