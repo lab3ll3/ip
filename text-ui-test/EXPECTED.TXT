@@ -7,26 +7,26 @@ Hello from
                   |______|_|\___| |_|  |_|
 
     ____________________________________________________________
-    Hello! I'm LicM
+    Hello! I'm licm.LicM.LicM
     What can I do for you?
     ____________________________________________________________
     ____________________________________________________________
-    Got it. I've added this task:
+    Got it. I've added this licm:
       [T][ ] Read book
     Now you have 1 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-    Got it. I've added this task:
+    Got it. I've added this licm:
       [T][ ] Borrow book
     Now you have 2 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-    Got it. I've added this task:
+    Got it. I've added this licm:
       [D][ ] Return book (by: Sunday)
     Now you have 3 tasks in the list.
     ____________________________________________________________
     ____________________________________________________________
-    Got it. I've added this task:
+    Got it. I've added this licm:
       [E][ ] Team meeting (from: 2pm to: 4pm)
     Now you have 4 tasks in the list.
     ____________________________________________________________
@@ -37,11 +37,11 @@ Hello from
     4. [E][ ] Team meeting (from: 2pm to: 4pm)
     ____________________________________________________________
     ____________________________________________________________
-    Nice! I've marked this task as done:
+    Nice! I've marked this licm as done:
       [T][X] Read book
     ____________________________________________________________
     ____________________________________________________________
-    Nice! I've marked this task as done:
+    Nice! I've marked this licm as done:
       [D][X] Return book (by: Sunday)
     ____________________________________________________________
     ____________________________________________________________
@@ -51,7 +51,7 @@ Hello from
     4. [E][ ] Team meeting (from: 2pm to: 4pm)
     ____________________________________________________________
     ____________________________________________________________
-    OK, I've marked this task as not done yet:
+    OK, I've marked this licm as not done yet:
       [T][ ] Read book
     ____________________________________________________________
     ____________________________________________________________
