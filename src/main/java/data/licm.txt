@@ -1,7 +1,2 @@
 T | 0 | read book
-D | 0 | return book | 2024-12-02
-T | 1 | join sports club
-T | 0 | hi
-T | 0 | /by
-D | 0 | 2 | 2000-12-10
-E | 1 | fr | 1950-05-15-2005-11-25
+E | 0 | project meeting | 2024-12-05-2024-12-07
