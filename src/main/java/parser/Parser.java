@@ -8,32 +8,65 @@ import task.Todo;
 
 import java.time.LocalDate;
 
+/**
+ * Parses user input commands into executable commands.
+ */
 public class Parser {
 
+    /**
+     * Enum representing the different types of commands.
+     */
     public enum CommandType {
         BYE, LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, FIND, UNKNOWN
     }
 
+    /**
+     * Represents a parsed command with its type and associated data.
+     */
     public static class ParsedCommand {
         public CommandType type;
         public String arguments;
         public int taskIndex;
 
+        /**
+         * Constructs a parsed command with no additional data.
+         *
+         * @param type The type of command
+         */
         public ParsedCommand(CommandType type) {
             this.type = type;
         }
 
+        /**
+         * Constructs a parsed command with string arguments.
+         *
+         * @param type The type of command
+         * @param arguments The command arguments as a string
+         */
         public ParsedCommand(CommandType type, String arguments) {
             this.type = type;
             this.arguments = arguments;
         }
 
+        /**
+         * Constructs a parsed command with a task index.
+         *
+         * @param type The type of command
+         * @param taskIndex The task index (0-based)
+         */
         public ParsedCommand(CommandType type, int taskIndex) {
             this.type = type;
             this.taskIndex = taskIndex;
         }
     }
 
+    /**
+     * Parses a full user input string into a ParsedCommand object.
+     *
+     * @param input The raw user input string
+     * @return A ParsedCommand object containing the command type and data
+     * @throws LicMException If the command is unknown or has invalid format
+     */
     public static ParsedCommand parse(String input) throws LicMException {
         if (input.equals("bye")) {
             return new ParsedCommand(CommandType.BYE);
@@ -58,6 +91,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses mark and unmark commands to extract the task index.
+     *
+     * @param input The raw user input
+     * @param type The command type (MARK or UNMARK)
+     * @return A ParsedCommand with the task index
+     * @throws LicMException If the task number is missing or invalid
+     */
     private static ParsedCommand parseMarkUnmark(String input, CommandType type) throws LicMException {
         int prefixLength = (type == CommandType.MARK) ? 5 : 7;
 
@@ -78,6 +119,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses delete commands to extract the task index.
+     *
+     * @param input The raw user input
+     * @return A ParsedCommand with the task index
+     * @throws LicMException If the task number is missing or invalid
+     */
     private static ParsedCommand parseDelete(String input) throws LicMException {
         if (input.length() <= 7) {
             throw LicMException.emptyDescription("delete");
@@ -96,6 +144,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a todo command and creates a Todo task.
+     *
+     * @param input The raw user input
+     * @return A new Todo task
+     * @throws LicMException If the description is empty
+     */
     public static Task parseTodo(String input) throws LicMException {
         if (input.length() <= 5) {
             throw LicMException.emptyDescription("todo");
@@ -109,6 +164,13 @@ public class Parser {
         return new Todo(description);
     }
 
+    /**
+     * Parses a deadline command and creates a Deadline task.
+     *
+     * @param input The raw user input in format "deadline <description> /by <date>"
+     * @return A new Deadline task
+     * @throws LicMException If format is invalid, description empty, or date invalid
+     */
     public static Task parseDeadline(String input) throws LicMException {
         if (input.length() <= 9) {
             throw LicMException.emptyDescription("deadline");
@@ -143,6 +205,13 @@ public class Parser {
         return new Deadline(description, by);
     }
 
+    /**
+     * Parses an event command and creates an Event task.
+     *
+     * @param input The raw user input in format "event <description> /from <date> /to <date>"
+     * @return A new Event task
+     * @throws LicMException If format is invalid, description empty, or dates invalid
+     */
     public static Task parseEvent(String input) throws LicMException {
         if (input.length() <= 6) {
             throw LicMException.emptyDescription("event");

@@ -5,17 +5,22 @@ import task.TaskList;
 import ui.Ui;
 import parser.Parser;
 import parser.Parser.ParsedCommand;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-
+/**
+ * Main class for the LicM task management application.
+ * Initializes components and runs the main interaction loop.
+ */
 public class LicM {
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
 
+    /**
+     * Constructs a new LicM application instance.
+     *
+     * @param filePath The path to the data file for storing tasks
+     */
     public LicM(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -27,6 +32,9 @@ public class LicM {
         }
     }
 
+    /**
+     * Runs the main application loop, reading and processing user commands.
+     */
     public void run() {
         ui.showGreeting();
 
@@ -86,12 +94,25 @@ public class LicM {
         }
     }
 
+    /**
+     * Handles adding a new task to the task list.
+     *
+     * @param task The task to be added
+     * @throws LicMException If there is an error saving the task
+     */
     private void handleAdd(Task task) throws LicMException {
         tasks.addTask(task);
         storage.save(tasks.getAllTasks());
         ui.showTaskAdded(task, tasks.size());
     }
 
+    /**
+     * Handles marking or unmarking a task as done.
+     *
+     * @param taskIndex The index of the task to mark (0-based)
+     * @param markAsDone true to mark as done, false to mark as not done
+     * @throws LicMException If the task index is invalid or there is a save error
+     */
     private void handleMark(int taskIndex, boolean markAsDone) throws LicMException {
         if (tasks.isEmpty()) {
             throw LicMException.emptyTaskList();
@@ -106,6 +127,12 @@ public class LicM {
         ui.showTaskMarked(tasks.getTask(taskIndex), markAsDone);
     }
 
+    /**
+     * Handles deleting a task from the task list.
+     *
+     * @param taskIndex The index of the task to delete (0-based)
+     * @throws LicMException If the task index is invalid or there is a save error
+     */
     private void handleDelete(int taskIndex) throws LicMException {
         if (taskIndex < 0 || taskIndex >= tasks.size()) {
             throw LicMException.invalidTaskNumber(tasks.size());
@@ -116,6 +143,12 @@ public class LicM {
         ui.showTaskDeleted(removedTask, tasks.size());
     }
 
+    /**
+     * Handles finding tasks by keyword in their descriptions.
+     *
+     * @param input The user input containing the search keyword
+     * @throws LicMException If the keyword is empty or invalid
+     */
     private void handleFind(String input) throws LicMException {
         if (input.length() <= 5) {
             throw new LicMException("Oopsies!!! Please specify a keyword to find.");
@@ -148,6 +181,11 @@ public class LicM {
         ui.showLine();
     }
 
+    /**
+     * The main entry point of the LicM application.
+     *
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         new LicM("./data/licm.txt").run();
     }
