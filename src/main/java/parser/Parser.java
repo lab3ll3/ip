@@ -39,6 +39,8 @@ public class Parser {
             return new ParsedCommand(CommandType.BYE);
         } else if (input.equals("list")) {
             return new ParsedCommand(CommandType.LIST);
+        } else if (input.startsWith("find ")) {
+            return new ParsedCommand(CommandType.FIND, input);
         } else if (input.startsWith("mark ")) {
             return parseMarkUnmark(input, CommandType.MARK);
         } else if (input.startsWith("unmark ")) {
@@ -51,8 +53,6 @@ public class Parser {
             return new ParsedCommand(CommandType.EVENT, input);
         } else if (input.startsWith("delete")) {
             return parseDelete(input);
-        } else if (input.startsWith("find ")) {
-            return new ParsedCommand(CommandType.FIND, input);
         } else {
             throw LicMException.unknownCommand();
         }

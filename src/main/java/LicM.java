@@ -118,49 +118,34 @@ public class LicM {
 
     private void handleFind(String input) throws LicMException {
         if (input.length() <= 5) {
-            throw new LicMException("Oopsies!!! Please specify a date (yyyy-mm-dd)");
+            throw new LicMException("Oopsies!!! Please specify a keyword to find.");
         }
 
-        String dateStr = input.substring(5).trim();
-        if (dateStr.isEmpty()) {
-            throw new LicMException("Oopsies!!! Please specify a date (yyyy-mm-dd)");
+        String keyword = input.substring(5).trim().toLowerCase();
+        if (keyword.isEmpty()) {
+            throw new LicMException("Oopsies!!! Please specify a keyword to find.");
         }
 
-        try {
-            LocalDate searchDate = LocalDate.parse(dateStr);
-            ArrayList<Task> matchingTasks = new ArrayList<>();
+        ArrayList<Task> matchingTasks = new ArrayList<>();
 
-            for (int i = 0; i < tasks.size(); i++) {
-                Task task = tasks.getTask(i);
-                if (task instanceof task.Deadline) {
-                    if (((task.Deadline) task).getBy().equals(searchDate)) {
-                        matchingTasks.add(task);
-                    }
-                } else if (task instanceof task.Event) {
-                    task.Event event = (task.Event) task;
-                    if (event.getFrom().equals(searchDate) ||
-                            event.getTo().equals(searchDate)) {
-                        matchingTasks.add(task);
-                    }
-                }
+        // Search through all tasks for the keyword
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.getTask(i);
+            if (task.getDescription().toLowerCase().contains(keyword)) {
+                matchingTasks.add(task);
             }
-
-            ui.showLine();
-            if (matchingTasks.isEmpty()) {
-                System.out.println(ui.INDENT + "No tasks found on " +
-                        searchDate.format(DateTimeFormatter.ofPattern("MMM d yyyy")));
-            } else {
-                System.out.println(ui.INDENT + "Tasks on " +
-                        searchDate.format(DateTimeFormatter.ofPattern("MMM d yyyy")) + ":");
-                for (int i = 0; i < matchingTasks.size(); i++) {
-                    System.out.println(ui.INDENT + (i + 1) + ". " + matchingTasks.get(i));
-                }
-            }
-            ui.showLine();
-
-        } catch (java.time.format.DateTimeParseException e) {
-            throw new LicMException("Oopsies!!! Invalid date format. Please use yyyy-mm-dd");
         }
+
+        ui.showLine();
+        if (matchingTasks.isEmpty()) {
+            System.out.println(ui.INDENT + "No matching tasks found for: " + keyword);
+        } else {
+            System.out.println(ui.INDENT + "Here are the matching tasks in your list:");
+            for (int i = 0; i < matchingTasks.size(); i++) {
+                System.out.println(ui.INDENT + (i + 1) + ". " + matchingTasks.get(i));
+            }
+        }
+        ui.showLine();
     }
 
     public static void main(String[] args) {

@@ -135,7 +135,7 @@ public class Storage {
                 if (parts.length < 4) {
                     throw new LicMException("Corrupted data file: missing event info");
                 }
-                String[] times = parts[3].split("-", 2);
+                String[] times = parts[3].split("-", 2);  // This splits into ["2024-12-05", "2024-12-07"]
                 if (times.length < 2) {
                     throw new LicMException("Corrupted data file: invalid event format");
                 }
