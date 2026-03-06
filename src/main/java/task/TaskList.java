@@ -1,29 +1,27 @@
 package task;
 
+import java.util.ArrayList;
+
 public class TaskList {
-    private static final int MAX_TASKS = 100;
-    private Task[] tasks;
-    private int taskCount;
+    private final ArrayList<Task> tasks;
 
     public TaskList() {
-        this.tasks = new Task[MAX_TASKS];
-        this.taskCount = 0;
+        this.tasks = new ArrayList<>();
+    }
+
+    public TaskList(ArrayList<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public void addTask(Task task) {
-        if (taskCount < MAX_TASKS) {
-            tasks[taskCount] = task;
-            taskCount++;
-        } else {
-            throw new IllegalStateException("Cannot add more than " + MAX_TASKS + " tasks");
-        }
+        tasks.add(task);
     }
 
     public Task getTask(int index) {
-        if (index < 0 || index >= taskCount) {
-            throw new IndexOutOfBoundsException("Invalid licm.task index: " + index);
+        if (index < 0 || index >= tasks.size()) {
+            throw new IndexOutOfBoundsException("Invalid task index: " + index);
         }
-        return tasks[index];
+        return tasks.get(index);
     }
 
     public void markTask(int index, boolean isDone) {
@@ -35,17 +33,22 @@ public class TaskList {
         }
     }
 
+    public Task deleteTask(int index) {
+        if (index < 0 || index >= tasks.size()) {
+            throw new IndexOutOfBoundsException("Invalid task index: " + index);
+        }
+        return tasks.remove(index);
+    }
+
     public int size() {
-        return taskCount;
+        return tasks.size();
     }
 
     public boolean isEmpty() {
-        return taskCount == 0;
+        return tasks.isEmpty();
     }
 
-    public Task[] getAllTasks() {
-        Task[] copy = new Task[taskCount];
-        System.arraycopy(tasks, 0, copy, 0, taskCount);
-        return copy;
+    public ArrayList<Task> getAllTasks() {
+        return new ArrayList<>(tasks);
     }
 }

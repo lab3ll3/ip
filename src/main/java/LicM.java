@@ -1,253 +1,169 @@
 import exceptions.LicMException;
-import task.Deadline;
-import task.Event;
 import task.Task;
-import task.Todo;
+import storage.Storage;
+import task.TaskList;
+import ui.Ui;
+import parser.Parser;
+import parser.Parser.ParsedCommand;
 
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+
 public class LicM {
-    private static final ArrayList<Task> tasks = new ArrayList<>();
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final String INDENT = "    ";
+    private Storage storage;
+    private TaskList tasks;
+    private Ui ui;
 
-    public static void main(String[] args) {
-        showGreeting();
-        run();
+    public LicM(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        try {
+            tasks = new TaskList(storage.load());
+        } catch (LicMException e) {
+            ui.showLoadingError();
+            tasks = new TaskList();
+        }
     }
 
-    private static void showGreeting() {
-        String logo = """
-                   _      _        __  __\s
-                  | |    (_)      |  \\/  |
-                  | |     _  ___  | \\  / |
-                  | |    | |/ __| | |\\/| |
-                  | |____| | (__  | |  | |
-                  |______|_|\\___| |_|  |_|
-                """;
+    public void run() {
+        ui.showGreeting();
 
-        System.out.println("Hello from\n" + logo);
-        printLine();
-        System.out.println(INDENT + "Hello! I'm LicM");
-        System.out.println(INDENT + "What can I do for you?");
-        printLine();
-    }
-
-    private static void run() {
         while (true) {
-            System.out.print(INDENT + "> ");
-            String input = scanner.nextLine().trim();
-
             try {
-                if (input.equals("bye")) {
-                    showGoodbye();
-                    break;
-                } else if (input.equals("list")) {
-                    showList();
-                } else if (input.startsWith("mark ")) {
-                    handleMark(input, true);
-                } else if (input.startsWith("unmark ")) {
-                    handleMark(input, false);
-                } else if (input.startsWith("todo")) {
-                    handleTodo(input);
-                } else if (input.startsWith("deadline")) {
-                    handleDeadline(input);
-                } else if (input.startsWith("event")) {
-                    handleEvent(input);
-                } else if (input.startsWith("delete")) {
-                    handleDelete(input);
-                } else {
-                    throw LicMException.unknownCommand();
+                String input = ui.readCommand();
+                ParsedCommand parsed = Parser.parse(input);
+
+                switch (parsed.type) {
+                    case BYE:
+                        ui.showGoodbye();
+                        ui.close();
+                        return;
+
+                    case LIST:
+                        if (tasks.isEmpty()) {
+                            throw LicMException.emptyTaskList();
+                        }
+                        ui.showTaskList(tasks.getAllTasks());
+                        break;
+
+                    case MARK:
+                        handleMark(parsed.taskIndex, true);
+                        break;
+
+                    case UNMARK:
+                        handleMark(parsed.taskIndex, false);
+                        break;
+
+                    case TODO:
+                        handleAdd(Parser.parseTodo(parsed.arguments));
+                        break;
+
+                    case DEADLINE:
+                        handleAdd(Parser.parseDeadline(parsed.arguments));
+                        break;
+
+                    case EVENT:
+                        handleAdd(Parser.parseEvent(parsed.arguments));
+                        break;
+
+                    case DELETE:
+                        handleDelete(parsed.taskIndex);
+                        break;
+
+                    case FIND:
+                        handleFind(parsed.arguments);
+                        break;
+
+                    default:
+                        throw LicMException.unknownCommand();
                 }
+
             } catch (LicMException e) {
-                printLine();
-                System.out.println(INDENT + e.getMessage());
-                printLine();
+                ui.showError(e.getMessage());
             }
         }
-        scanner.close();
     }
 
-    private static void addTask(Task task) {
-        tasks.add(task);
-
-        printLine();
-        System.out.println(INDENT + "Got it. I've added this task:");
-        System.out.println(INDENT + "  " + task);
-        System.out.println(INDENT + "Now you have " + tasks.size() + " tasks in the list.");
-        printLine();
+    private void handleAdd(Task task) throws LicMException {
+        tasks.addTask(task);
+        storage.save(tasks.getAllTasks());
+        ui.showTaskAdded(task, tasks.size());
     }
 
-    private static void showList() throws LicMException {
-        printLine();
+    private void handleMark(int taskIndex, boolean markAsDone) throws LicMException {
         if (tasks.isEmpty()) {
             throw LicMException.emptyTaskList();
-        } else {
-            System.out.println(INDENT + "Here are the tasks in your list:");
-            for (int i = 0; i < tasks.size(); i++) {
-                System.out.println(INDENT + (i + 1) + ". " + tasks.get(i));
-            }
         }
-        printLine();
+
+        if (taskIndex < 0 || taskIndex >= tasks.size()) {
+            throw LicMException.invalidTaskNumber(tasks.size());
+        }
+
+        tasks.markTask(taskIndex, markAsDone);
+        storage.save(tasks.getAllTasks());
+        ui.showTaskMarked(tasks.getTask(taskIndex), markAsDone);
     }
 
-    private static void handleTodo(String input) throws LicMException {
+    private void handleDelete(int taskIndex) throws LicMException {
+        if (taskIndex < 0 || taskIndex >= tasks.size()) {
+            throw LicMException.invalidTaskNumber(tasks.size());
+        }
+
+        Task removedTask = tasks.deleteTask(taskIndex);
+        storage.save(tasks.getAllTasks());
+        ui.showTaskDeleted(removedTask, tasks.size());
+    }
+
+    private void handleFind(String input) throws LicMException {
         if (input.length() <= 5) {
-            throw LicMException.emptyDescription("todo");
+            throw new LicMException("Oopsies!!! Please specify a date (yyyy-mm-dd)");
         }
 
-        String description = input.substring(5).trim();
-        if (description.isEmpty()) {
-            throw LicMException.emptyDescription("todo");
-        }
-
-        addTask(new Todo(description));
-    }
-
-    private static void handleDelete(String input) throws LicMException {
-        if (input.length() <= 7) {
-            throw LicMException.emptyDescription("delete");
-        }
-
-        String description = input.substring(7).trim();
-        if (description.isEmpty()) {
-            throw LicMException.emptyDescription("delete");
+        String dateStr = input.substring(5).trim();
+        if (dateStr.isEmpty()) {
+            throw new LicMException("Oopsies!!! Please specify a date (yyyy-mm-dd)");
         }
 
         try {
-            int taskIndex = Integer.parseInt(description) - 1;
+            LocalDate searchDate = LocalDate.parse(dateStr);
+            ArrayList<Task> matchingTasks = new ArrayList<>();
 
-            if (taskIndex < 0 || taskIndex >= tasks.size()) {
-                throw LicMException.invalidTaskNumber(tasks.size());
+            for (int i = 0; i < tasks.size(); i++) {
+                Task task = tasks.getTask(i);
+                if (task instanceof task.Deadline) {
+                    if (((task.Deadline) task).getBy().equals(searchDate)) {
+                        matchingTasks.add(task);
+                    }
+                } else if (task instanceof task.Event) {
+                    task.Event event = (task.Event) task;
+                    if (event.getFrom().equals(searchDate) ||
+                            event.getTo().equals(searchDate)) {
+                        matchingTasks.add(task);
+                    }
+                }
             }
 
-            Task removedTask = tasks.get(taskIndex);
-            tasks.remove(taskIndex);
-
-            printLine();
-            System.out.println(INDENT + "Noted. I've removed this task:");
-            System.out.println(INDENT + "  " + removedTask);
-            System.out.println(INDENT + "Now you have " + tasks.size() + " tasks in the list.");
-            printLine();
-
-        } catch (NumberFormatException e) {
-            throw LicMException.invalidTaskNumber(tasks.size());
-        }
-    }
-
-    private static void handleDeadline(String input) throws LicMException {
-        if (input.length() <= 9) {
-            throw LicMException.emptyDescription("deadline");
-        }
-
-        String content = input.substring(9).trim();
-
-        if (!content.contains("/by")) {
-            throw LicMException.missingParameter("deadline", "/by");
-        }
-
-        int byIndex = content.indexOf("/by");
-        String description = content.substring(0, byIndex).trim();
-
-        if (description.isEmpty()) {
-            throw LicMException.emptyDescription("deadline");
-        }
-
-        String by = content.substring(byIndex + 3).trim();
-
-        if (by.isEmpty()) {
-            throw LicMException.emptyDescription("deadline");
-        }
-
-        addTask(new Deadline(description, by));
-    }
-
-    private static void handleEvent(String input) throws LicMException {
-        if (input.length() <= 6) {
-            throw LicMException.emptyDescription("event");
-        }
-
-        String content = input.substring(6).trim();
-
-        if (!content.contains("/from")) {
-            throw LicMException.missingParameter("event", "/from");
-        }
-
-        if (!content.contains("/to")) {
-            throw LicMException.missingParameter("event", "/to");
-        }
-
-        int fromIndex = content.indexOf("/from");
-        int toIndex = content.indexOf("/to");
-
-        if (fromIndex > toIndex) {
-            throw LicMException.missingParameter("event", "/from");
-        }
-
-        String description = content.substring(0, fromIndex).trim();
-        if (description.isEmpty()) {
-            throw LicMException.emptyDescription("event");
-        }
-
-        String from = content.substring(fromIndex + 5, toIndex).trim();
-        String to = content.substring(toIndex + 3).trim();
-
-        if (from.isEmpty()) {
-            throw LicMException.emptyDescription("event");
-        }
-
-        if (to.isEmpty()) {
-            throw LicMException.emptyDescription("event");
-        }
-
-        addTask(new Event(description, from, to));
-    }
-    private static void handleMark(String input, boolean markAsDone) throws LicMException {
-        try {
-            int prefixLength = markAsDone ? 5 : 7;
-
-            if (input.length() <= prefixLength) {
-                throw LicMException.missingTaskNumber();
-            }
-
-            String numberStr = input.substring(prefixLength).trim();
-            if (numberStr.isEmpty()) {
-                throw LicMException.missingTaskNumber();
-            }
-
-            int taskIndex = Integer.parseInt(numberStr) - 1;
-
-            if (taskIndex < 0 || taskIndex >= tasks.size()) {
-                throw LicMException.invalidTaskNumber(tasks.size());
-            }
-
-            Task task = tasks.get(taskIndex);
-
-            printLine();
-            if (markAsDone) {
-                task.markAsDone();
-                System.out.println(INDENT + "Nice! I've marked this task as done:");
+            ui.showLine();
+            if (matchingTasks.isEmpty()) {
+                System.out.println(ui.INDENT + "No tasks found on " +
+                        searchDate.format(DateTimeFormatter.ofPattern("MMM d yyyy")));
             } else {
-                task.markAsNotDone();
-                System.out.println(INDENT + "OK, I've marked this task as not done yet:");
+                System.out.println(ui.INDENT + "Tasks on " +
+                        searchDate.format(DateTimeFormatter.ofPattern("MMM d yyyy")) + ":");
+                for (int i = 0; i < matchingTasks.size(); i++) {
+                    System.out.println(ui.INDENT + (i + 1) + ". " + matchingTasks.get(i));
+                }
             }
-            System.out.println(INDENT + "  " + task);
-            printLine();
+            ui.showLine();
 
-        } catch (NumberFormatException e) {
-            throw LicMException.invalidTaskNumber(tasks.size());
+        } catch (java.time.format.DateTimeParseException e) {
+            throw new LicMException("Oopsies!!! Invalid date format. Please use yyyy-mm-dd");
         }
     }
 
-
-    private static void showGoodbye() {
-        printLine();
-        System.out.println(INDENT + "Bye. Hope to see you again soon!");
-        printLine();
-    }
-
-    private static void printLine() {
-        System.out.println(INDENT + "____________________________________________________________");
+    public static void main(String[] args) {
+        new LicM("./data/licm.txt").run();
     }
 }
